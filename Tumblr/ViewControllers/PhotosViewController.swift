@@ -10,9 +10,7 @@ import UIKit
  import AlamofireImage
 
 class PhotosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         return posts.count
-    }
+   
   
     
 
@@ -24,6 +22,8 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
         
         tvPhoto.delegate = self
         tvPhoto.dataSource = self
+        tvPhoto.rowHeight = 150
+        tvPhoto.estimatedRowHeight = 200
         // Do any additional setup after loading the view.
         
         let url = URL(string: "https://api.tumblr.com/v2/blog/humansofnewyork.tumblr.com/posts/photo?api_key=Q6vHoaVm5L1u2ZAW1fqv3Jw48gFzYVg9P0vH0VHl3GVy6quoGV")!
@@ -43,29 +43,37 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
                 self.posts = responseDictionary["posts"] as! [[String: Any]]
                 
                 // TODO: Reload the table view
+                 self.tvPhoto.reloadData()
             }
         }
         task.resume()
     }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return posts.count
+    }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell") as! PhotoCell
-        
-        // Configure YourCustomCell using the outlets that you've defined.
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
         let post = posts[indexPath.row]
-        
-        if let photos = post["photos"] as? [[String: Any]] {
-            // 1.
+        if let photos = post["photos"] as? [[String: Any]]{
+            // photos is NOT nil, we can use it!
+            // todo: get the photo url
+            
+            // Get the first photo in the photos array
             let photo = photos[0]
-            // 2.
-            let originalSize = photo["original_size"] as! [String: Any]
-            // 3.
+            // Get the original size dictionary from the photo
+            let originalSize =  photo["original_size"] as! [String: Any]
+            // Get the url string from the original size dictionary
             let urlString = originalSize["url"] as! String
-            // 4.
+            // Create a URL using the urlString
             let url = URL(string: urlString)
-               cell.photoImageView.af_setImage(withURL: url!)
-
+            
+            // call the AlamofireImage method
+            cell.photoImageView.af_setImage(withURL: url!)
         }
+        
+        // Configure PhotoCell using the outlets that you've defined.
+        
         return cell
     }
 
