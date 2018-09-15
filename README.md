@@ -8,7 +8,7 @@ Time spent: **X** hours spent in total
 
 The following **required** user stories are complete:
 
-- [X] User can scroll through a feed of images returned from the Tumblr API (5pts)
+- [ ] User can scroll through a feed of images returned from the Tumblr API (5pts)
 
 The following **stretch** user stories are implemented:
 
